@@ -17,6 +17,16 @@ const Chat = () => {
     socket = io(ENDPOINT, { transports: ["websocket"] });
     setUserName(name);
     setUserRoom(room);
+
+    //The second arguement is passing some props to socketio
+    //Third arguement is for the callback in BE (for error handling)
+    socket.emit("join", { name, room }, () => {});
+
+    return () => {
+      socket.emit("disconnect");
+      //turn socket connection for this one person off
+      socket.off();
+    };
   }, [ENDPOINT, name, room]);
 
   return <div>Chat</div>;
