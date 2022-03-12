@@ -10,7 +10,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+// NOTE:
+// 1) emit => Sending message
+// 2) on => Listening for message
+
 io.on("connection", (socket) => {
+  //1) Handle socket when joining
   socket.on("join", ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
     //if error comes from addUser function, we will send it to front end
@@ -29,8 +34,19 @@ io.on("connection", (socket) => {
 
     //Adds user to a room
     socket.join(user.room);
+
+    //callback will not run in FE if there is no error
+    callback();
   });
 
+  //2) Handle socket sending messages
+  socket.on("sendMessage", (message, callback) => {
+    const user = getUser(socket.id);
+
+    io.to(user.room).emit("message", { user: user.name, text: message });
+  });
+
+  //3) Handle socket when disconnecting
   socket.on("disconnect", () => {
     console.log("The user has disconnected");
   });
