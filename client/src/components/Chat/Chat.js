@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./chat.css";
 import io from "socket.io-client";
 import { useLocation } from "react-router-dom";
-
+import InfoBar from "../infoBar/InfoBar";
+import Input from "../input/Input";
 // NOTE:
 // 1) emit => Sending message
 // 2) on => Listening for message
@@ -52,10 +53,11 @@ const Chat = () => {
   return (
     <div className="outerContainer">
       <div className="container">
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => (e.key === "Enter" ? sendMessage(e) : null)}
+        <InfoBar room={room} />
+        <Input
+          setMessage={setMessages}
+          sendMessage={sendMessage}
+          message={message}
         />
       </div>
     </div>
