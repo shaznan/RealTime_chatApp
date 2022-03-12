@@ -32,10 +32,15 @@ io.on("connection", (socket) => {
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name}, has joined!` });
 
-    //Adds user to a room
+    //join user to a chat room
     socket.join(user.room);
 
-    //callback will not run in FE if there is no error
+    //send all the users in a room
+    io.to(user.room).emit("roomData", {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    });
+
     callback();
   });
 
@@ -44,11 +49,26 @@ io.on("connection", (socket) => {
     const user = getUser(socket.id);
 
     io.to(user.room).emit("message", { user: user.name, text: message });
+    io.to(user.room).emit("roomData", {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    });
   });
 
   //3) Handle socket when disconnecting
   socket.on("disconnect", () => {
-    console.log("The user has disconnected");
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit("message", {
+        user: "Admin",
+        text: `${user.name} has left.`,
+      });
+      io.to(user.room).emit("roomData", {
+        room: user.room,
+        users: getUsersInRoom(user.room),
+      });
+    }
   });
 });
 

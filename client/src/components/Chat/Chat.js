@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { useLocation } from "react-router-dom";
 import InfoBar from "../infoBar/InfoBar";
 import Input from "../input/Input";
+import Messages from "../messages/Messages";
 // NOTE:
 // 1) emit => Sending message
 // 2) on => Listening for message
@@ -41,7 +42,7 @@ const Chat = () => {
     socket.on("message", (message) => {
       setMessages([...messages, message]);
     });
-  }, [messages]);
+  }, [message]);
 
   //function for sening message
   const sendMessage = (e) => {
@@ -54,8 +55,9 @@ const Chat = () => {
     <div className="outerContainer">
       <div className="container">
         <InfoBar room={room} />
+        <Messages messages={messages} name={userName} />
         <Input
-          setMessage={setMessages}
+          setMessage={setMessage}
           sendMessage={sendMessage}
           message={message}
         />
