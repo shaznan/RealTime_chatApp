@@ -16,7 +16,7 @@ const Chat = () => {
   const [userRoom, setUserRoom] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const ENDPOINT = "http://localhost:8000/";
+  const ENDPOINT = "https://murmuring-brushlands-51071.herokuapp.com/";
 
   //establish connection to backend
   const { name, room } = location.state;
